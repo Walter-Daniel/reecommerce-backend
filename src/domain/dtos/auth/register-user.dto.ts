@@ -1,5 +1,5 @@
 import { Validators } from '../../../config/validators.js';
-import type { ValidationError } from '../../errors/validation-error.js';
+import type { ValidationError } from '../../errors/validation.error.js';
 
 export class RegisterUserDto {
   private constructor(
