@@ -1,3 +1,4 @@
+import { BcryptAdapter } from '../../config/bcrypt.js';
 import { UserModel } from '../../data/mongodb/models/user.model.js';
 import {
   CustomError,
@@ -18,12 +19,12 @@ export class AuthDatasourceImpl implements AuthDatasource {
       const user = await UserModel.create({
         name: name,
         email: email,
-        password: password,
+        password: BcryptAdapter.hash(password),
       });
       //2. Hash de contraseña
       await user.save();
       //3. Mapear la respuesta a nuestra entidad
-      return new UserEntity(user.id, name, email, password, user.roles);
+      return new UserEntity(user.id, name, email, user.password, user.roles);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
