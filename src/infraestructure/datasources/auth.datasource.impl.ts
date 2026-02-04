@@ -5,6 +5,7 @@ import {
   UserEntity,
   type AuthDatasource,
   type RegisterUserDto,
+  type LoginUserDto,
   type AssignRolesDto,
 } from '../../domain/index.js';
 
@@ -35,6 +36,39 @@ export class AuthDatasourceImpl implements AuthDatasource {
       await user.save();
       //3. Mapear la respuesta a nuestra entidad
       return new UserEntity(user.id, name, email, user.password, user.roles);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServerError();
+    }
+  }
+
+  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const { email, password } = loginUserDto;
+
+    try {
+      // 1. Find user by email
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        throw CustomError.badRequest('Invalid credentials');
+      }
+
+      // 2. Verify password
+      const isPasswordValid = this.compareFunction(password, user.password);
+      if (!isPasswordValid) {
+        throw CustomError.badRequest('Invalid credentials');
+      }
+
+      // 3. Return user entity
+      return new UserEntity(
+        user.id,
+        user.name,
+        user.email,
+        user.password,
+        user.roles,
+        user.img
+      );
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

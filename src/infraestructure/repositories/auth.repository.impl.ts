@@ -2,6 +2,7 @@ import type {
   AuthDatasource,
   AuthRepository,
   RegisterUserDto,
+  LoginUserDto,
   AssignRolesDto,
   UserEntity,
 } from '../../domain/index.js';
@@ -11,6 +12,10 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
     return this.authDatasource.register(registerUserDto);
+  }
+
+  login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    return this.authDatasource.login(loginUserDto);
   }
 
   assignRoles(assignRolesDto: AssignRolesDto): Promise<UserEntity> {
