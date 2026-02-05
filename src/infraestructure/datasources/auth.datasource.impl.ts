@@ -5,6 +5,8 @@ import {
   UserEntity,
   type AuthDatasource,
   type RegisterUserDto,
+  type LoginUserDto,
+  type AssignRolesDto,
 } from '../../domain/index.js';
 
 type HashFunction = (password: string) => string;
@@ -17,7 +19,7 @@ export class AuthDatasourceImpl implements AuthDatasource {
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
-    const { name, email, password } = registerUserDto;
+    const { name, email, password, roles } = registerUserDto;
 
     try {
       //1. Verificar si el correo existe
@@ -28,11 +30,73 @@ export class AuthDatasourceImpl implements AuthDatasource {
         name: name,
         email: email,
         password: this.hashPassword(password),
+        roles: roles,
       });
       //2. Hash de contraseña
       await user.save();
       //3. Mapear la respuesta a nuestra entidad
       return new UserEntity(user.id, name, email, user.password, user.roles);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServerError();
+    }
+  }
+
+  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const { email, password } = loginUserDto;
+
+    try {
+      // 1. Find user by email
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        throw CustomError.badRequest('Invalid credentials');
+      }
+
+      // 2. Verify password
+      const isPasswordValid = this.compareFunction(password, user.password);
+      if (!isPasswordValid) {
+        throw CustomError.badRequest('Invalid credentials');
+      }
+
+      // 3. Return user entity
+      return new UserEntity(
+        user.id,
+        user.name,
+        user.email,
+        user.password,
+        user.roles,
+        user.img
+      );
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServerError();
+    }
+  }
+
+  async assignRoles(assignRolesDto: AssignRolesDto): Promise<UserEntity> {
+    const { userId, roles } = assignRolesDto;
+
+    try {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        throw CustomError.notFound('User not found');
+      }
+
+      user.roles = roles;
+      await user.save();
+
+      return new UserEntity(
+        user.id,
+        user.name,
+        user.email,
+        user.password,
+        user.roles,
+        user.img
+      );
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

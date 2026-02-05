@@ -21,9 +21,11 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
     "express": "^5.2.1",
     "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5"
   }
 }
