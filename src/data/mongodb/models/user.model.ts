@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // Indexes for performance
-userSchema.index({ email: 1 });
+// Note: email index is already created by unique: true
 userSchema.index({ roles: 1 });
 
 export const UserModel = mongoose.model('User', userSchema);
