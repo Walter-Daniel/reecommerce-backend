@@ -3,7 +3,6 @@ export enum UserRole {
   GUEST = 'GUEST_ROLE',
   BUYER = 'BUYER_ROLE',
   SELLER = 'SELLER_ROLE',
-  PREMIUM_SELLER = 'PREMIUM_SELLER_ROLE',
 
   // Support roles
   SUPPORT = 'SUPPORT_ROLE',

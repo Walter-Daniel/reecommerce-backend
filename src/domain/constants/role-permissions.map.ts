@@ -29,23 +29,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     Permission.VIEW_SALES_REPORTS,
   ],
 
-  [UserRole.PREMIUM_SELLER]: [
-    // Everything a seller can do
-    Permission.READ_PRODUCT,
-    Permission.CREATE_ORDER,
-    Permission.READ_ORDER,
-    Permission.CANCEL_ORDER,
-    Permission.CREATE_REVIEW,
-    Permission.READ_USER,
-    Permission.CREATE_PRODUCT,
-    Permission.UPDATE_PRODUCT,
-    Permission.DELETE_PRODUCT,
-    Permission.VIEW_SALES_REPORTS,
-
-    // Plus premium features
-    Permission.VIEW_FINANCIAL_REPORTS,
-  ],
-
   [UserRole.SUPPORT]: [
     Permission.READ_PRODUCT,
     Permission.READ_ORDER,
